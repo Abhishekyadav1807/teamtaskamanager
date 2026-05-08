@@ -1,6 +1,6 @@
-# PulseBoard - Team Task Manager (MERN)
+# TeamTaskManager - Team Task Manager (MERN)
 
-PulseBoard is a collaborative task manager I built to simulate a real team workflow with role-based controls.
+TeamTaskManager is a collaborative task manager I built to simulate a real team workflow with role-based controls.
 The flow is intentionally straightforward: project -> members -> tasks -> tracking, while still handling practical access checks.
 
 ## Tech Stack

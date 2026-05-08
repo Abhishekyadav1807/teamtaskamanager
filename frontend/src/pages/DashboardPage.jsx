@@ -112,7 +112,7 @@ const DashboardPage = () => {
     <div className="app-shell">
       <header className="topbar">
         <div>
-          <h1>PulseBoard</h1>
+          <h1>TeamTaskManager</h1>
           <p>Welcome, {user.name}</p>
         </div>
         <button className="ghost" onClick={logout}>Logout</button>
