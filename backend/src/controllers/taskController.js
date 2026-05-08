@@ -1,4 +1,4 @@
-﻿import { validationResult } from "express-validator";
+import { validationResult } from "express-validator";
 import Project from "../models/Project.js";
 import Task from "../models/Task.js";
 import { asyncHandler } from "../utils/asyncHandler.js";

@@ -1,5 +1,5 @@
-﻿import { useEffect, useMemo, useState } from "react";
-import { BarChart, Bar, ResponsiveContainer, Tooltip, XAxis, YAxis, PieChart, Pie, Cell, Legend } from "recharts";
+import { useEffect, useMemo, useState } from "react";
+import { BarChart, Bar, ResponsiveContainer, Tooltip, XAxis, YAxis, PieChart, Pie, Cell } from "recharts";
 import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { formatDate } from "../utils/date";
@@ -79,9 +79,14 @@ const DashboardPage = () => {
   const addMember = async (e) => {
     e.preventDefault();
     if (!selectedProjectId) return;
-    const { data } = await api.post(`/projects/${selectedProjectId}/members`, { email: memberEmail });
-    setProjects((prev) => prev.map((p) => (p._id === data._id ? data : p)));
-    setMemberEmail("");
+    try {
+      setError("");
+      const { data } = await api.post(`/projects/${selectedProjectId}/members`, { email: memberEmail.trim() });
+      setProjects((prev) => prev.map((p) => (p._id === data._id ? data : p)));
+      setMemberEmail("");
+    } catch (err) {
+      setError(err.response?.data?.message || "Unable to add member");
+    }
   };
 
   const removeMember = async (uid) => {
@@ -124,26 +129,39 @@ const DashboardPage = () => {
       <section className="chart-grid">
         <article className="panel">
           <h3>Tasks by Status</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie data={statusData} dataKey="value" nameKey="name" outerRadius={86}>
-                {statusData.map((_, i) => <Cell key={i} fill={["#f4a261", "#2a9d8f", "#264653"][i % 3]} />)}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
+          {statusData.some((item) => item.value > 0) ? (
+            <>
+              <ResponsiveContainer width="100%" height={250}>
+                <PieChart>
+                  <Pie data={statusData} dataKey="value" nameKey="name" outerRadius={86} stroke="none" isAnimationActive={false}>
+                    {statusData.map((_, i) => <Cell key={i} fill={["#f4a261", "#2a9d8f", "#264653"][i % 3]} />)}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="text-legend">
+                <span style={{ color: "#f4a261" }}>To Do</span>
+                <span style={{ color: "#2a9d8f" }}>In Progress</span>
+                <span style={{ color: "#264653" }}>Done</span>
+              </div>
+            </>
+          ) : (
+            <div className="chart-empty">No status data yet. Create tasks to see trends.</div>
+          )}
         </article>
         <article className="panel">
           <h3>Tasks per User</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={perUserData}>
-              <XAxis dataKey="name" />
-              <YAxis allowDecimals={false} />
-              <Tooltip />
-              <Bar dataKey="tasks" fill="#e76f51" radius={[8, 8, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          {perUserData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={perUserData} margin={{ top: 8, right: 16, left: -8, bottom: 0 }}>
+                <XAxis dataKey="name" tickLine={false} axisLine={false} />
+                <YAxis allowDecimals={false} tickLine={false} axisLine={false} />
+                <Bar dataKey="tasks" fill="#e76f51" radius={[8, 8, 0, 0]} maxBarSize={56} isAnimationActive={false} />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="chart-empty">No assignees yet. Assign tasks to team members.</div>
+          )}
         </article>
       </section>
 

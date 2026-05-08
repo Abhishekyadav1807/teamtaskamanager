@@ -1,4 +1,4 @@
-﻿import express from "express";
+import express from "express";
 import { body } from "express-validator";
 import { login, me, signup } from "../controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";

@@ -1,4 +1,4 @@
-﻿import express from "express";
+import express from "express";
 import { body } from "express-validator";
 import { createTask, getTasks, updateTask } from "../controllers/taskController.js";
 import { protect } from "../middleware/authMiddleware.js";

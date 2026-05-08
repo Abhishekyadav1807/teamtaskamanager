@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -19,7 +19,10 @@ const AuthPage = ({ mode }) => {
       else await login({ email: form.email, password: form.password });
       navigate("/");
     } catch (err) {
-      setError(err.response?.data?.message || "Unable to continue");
+      const apiMessage = err.response?.data?.message;
+      const validationMessage = err.response?.data?.errors?.[0]?.msg;
+      const networkMessage = err.code === "ERR_NETWORK" ? "Backend server is not reachable. Check if API is running." : null;
+      setError(apiMessage || validationMessage || networkMessage || "Unable to continue");
     } finally {
       setBusy(false);
     }

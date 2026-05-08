@@ -1,4 +1,4 @@
-﻿import { validationResult } from "express-validator";
+import { validationResult } from "express-validator";
 import Project from "../models/Project.js";
 import User from "../models/User.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -29,6 +29,8 @@ export const getProjects = asyncHandler(async (req, res) => {
 export const addMember = asyncHandler(async (req, res) => {
   const { projectId } = req.params;
   const { email } = req.body;
+  const normalizedEmail = email?.trim().toLowerCase();
+  if (!normalizedEmail) return res.status(400).json({ message: "Email is required" });
 
   const project = await Project.findById(projectId);
   if (!project) return res.status(404).json({ message: "Project not found" });
@@ -36,7 +38,7 @@ export const addMember = asyncHandler(async (req, res) => {
   const myMembership = getMembership(project, req.user._id);
   if (!myMembership || myMembership.role !== "Admin") return res.status(403).json({ message: "Admin only" });
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email: normalizedEmail });
   if (!user) return res.status(404).json({ message: "User not found" });
 
   const exists = getMembership(project, user._id);

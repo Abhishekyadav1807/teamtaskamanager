@@ -1,4 +1,4 @@
-﻿import express from "express";
+import express from "express";
 import { getDashboard } from "../controllers/dashboardController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
