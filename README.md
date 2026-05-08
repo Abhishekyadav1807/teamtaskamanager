@@ -31,6 +31,11 @@ The flow is intentionally straightforward: project -> members -> tasks -> tracki
 - Immediate dashboard refresh after task updates
 - Mobile-friendly layout and readable visual hierarchy
 
+## Development Notes
+- I kept role checks on the backend as the source of truth, and used frontend role-based rendering only for UX clarity.
+- I intentionally kept task statuses fixed (`To Do`, `In Progress`, `Done`) to simplify analytics consistency on the dashboard.
+- I chose email-based member invite input to keep the assignment flow quick to demo without building a separate user directory screen.
+
 ## Data Model (Summary)
 - `User`: name, email, password hash
 - `Project`: name, description, creator, members[] with role (`Admin`/`Member`)
